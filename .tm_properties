@@ -1,0 +1,4 @@
+exclude = '{$exclude,__pycache__}'
+
+# Preferences
+TM_PYTHON = '$HOME/.virtualenvs/metadata/bin/python'
