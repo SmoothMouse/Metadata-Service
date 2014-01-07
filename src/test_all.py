@@ -18,11 +18,17 @@ def test_get_ms_device_metadata():
 	assert os.path.isfile(md['icon_path'])
 	os.remove(md['icon_path'])
 	
+	md = metadata.get_ms_device_metadata(123456, 123456)
+	assert md == {}
+	
 def test_get_linux_device_metadata():
 	md = metadata.get_linux_device_metadata(1133, 49182)
 	
 	assert 'Logitech' in md['vendor_name']
 	assert '518' in md['product_name']
+	
+	md = metadata.get_linux_device_metadata(123456, 123456)
+	assert md == {}
 	
 def test_get_sm_device_metadata():
 	md = metadata.get_sm_device_metadata(1133, 49182)

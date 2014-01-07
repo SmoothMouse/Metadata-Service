@@ -13,7 +13,7 @@ def get_ms_device_metadata_filename(vid, pid):
 	Returns a filename of device metadata archive on the Microsoft server
 	Example: da7428fa-7dd7-4d22-af80-afa4c260a773.devicemetadata-ms
 	
-	If Microsoft does not provide metadata, a RuntimeWarning is raised.
+	If Microsoft does not provide metadata, return None.
 	"""
 	
 	# Send request
@@ -35,7 +35,7 @@ def get_ms_device_metadata_filename(vid, pid):
 	try:
 		filename = re.search('<fn>(.*\.devicemetadata-ms)</fn>', request.text).group(1)
 	except Exception:
-		raise RuntimeWarning('devicemetadata-ms was not found')
+		filename = None
 	
 	return filename
 	
@@ -86,16 +86,19 @@ def prepare_ms_icon(src, dst, min_width=48):
 	return True
 
 def get_ms_device_metadata(vid, pid):
-	"""Return device metadata from metaservices.microsoft.com"""
+	"""
+	Return device metadata from metaservices.microsoft.com
+	If not found, return an empty dictionary. In case of an error, throw an exception.
+	"""
 	result = {}
 	
-	# Form the URL
-	try:
-		filename = get_ms_device_metadata_filename(vid, pid)
-	except RuntimeWarning:
-		sys.exc_clear()
+	# Get the name of cab file with metadata to download from metaservices.microsoft.com
+	filename = get_ms_device_metadata_filename(vid, pid)
+	
+	if not filename:
 		return result
-		
+	
+	# Form the URL	
 	url = 'http://download.dmd.metaservices.microsoft.com/dp/winqual/%(filename)s' % {'filename': filename}
 	# DEBUG:url = 'http://localhost/~Dae/da7428fa-7dd7-4d22-af80-afa4c260a773.devicemetadata-ms'
 	
@@ -153,7 +156,10 @@ def get_ms_device_metadata(vid, pid):
 	return result
 
 def get_linux_device_metadata(vid, pid):
-	"""Return device metadata from the local SQLite3 database with data from linux-usb.org"""
+	"""
+	Return device metadata from the local SQLite3 database with data from linux-usb.org
+	If not found, return an empty dictionary. In case of an error, throw an exception.
+	"""
 	try:
 		handle = sqlite3.connect(settings.USB_IDS_DB_PATH)
 		handle.row_factory = sqlite3.Row
@@ -175,6 +181,12 @@ def get_linux_device_metadata(vid, pid):
 			handle.close()
 
 def get_sm_device_metadata(vid, pid):
+	"""
+	Query Linux metadata and local icon cache, if not found query Microsoft. 
+	This callable should catch all exceptions from lower levels and log them.
+	If not found, return an empty dictionary.
+	"""
+	
 	device_metadata = {}
 	
 	# First try to get vendor_name, product_name from Linux
@@ -201,16 +213,16 @@ def get_sm_device_metadata(vid, pid):
 		# Calling Microsoft
 		try:
 			ms_metadata = get_ms_device_metadata(vid, pid)
-		
+			
 			if not ms_metadata:
 				logging.info('No Microsoft metadata available for %i:%i' % (vid, pid))
-	
+			
 			if not device_metadata.get('vendor_name') and ms_metadata.get('vendor_name'):
 				device_metadata['vendor_name'] = ms_metadata['vendor_name']
 			
 			if not device_metadata.get('product_name') and ms_metadata.get('product_name'):
 				device_metadata['product_name'] = ms_metadata['product_name']
-		
+			
 			if ms_metadata.get('icon_path'):
 				if not device_metadata.get('icon'):
 		 			try:
