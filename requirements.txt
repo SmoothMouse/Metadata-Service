@@ -1,0 +1,4 @@
+bottle==0.11.6
+pytest==2.5.1
+requests==2.1.0
+wsgiref==0.1.2
