@@ -45,5 +45,5 @@ def devices(vid, pid):
 def serve_icons(filename):
     return static_file(filename, root=settings.ICONS_DIR)
 
-from bottle import run
-run(host='192.168.0.110', port=8000, reloader=True)
+#from bottle import run
+#run(host='192.168.0.110', port=8000, reloader=True)
