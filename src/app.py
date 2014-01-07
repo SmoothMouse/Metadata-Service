@@ -1,11 +1,9 @@
 import os, urllib, cgi
 import xml.etree.ElementTree as ET
 
-from bottle import debug, route, static_file, request, response, run
+from bottle import debug, route, static_file, request, response
 
 import settings, metadata
-
-debug(True)
 
 @route('/devices/<vid:int>/<pid:int>/', method='GET')
 def devices(vid, pid):
@@ -47,4 +45,5 @@ def devices(vid, pid):
 def serve_icons(filename):
     return static_file(filename, root=settings.ICONS_DIR)
 
+from bottle import run
 run(host='192.168.0.110', port=8000, reloader=True)
