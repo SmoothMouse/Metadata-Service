@@ -1,8 +1,8 @@
 # coding: utf-8
 import os, logging
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-STATIC_DIR = os.path.join(BASE_DIR, 'static')
+BASE_DIR = os.path.dirname(os.path.realpath(__file__))
+STATIC_DIR = os.path.join(os.path.dirname(BASE_DIR), 'static')
 
 CACHE_DIR = os.path.join(STATIC_DIR, 'cache')
 

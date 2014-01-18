@@ -22,6 +22,9 @@ def test_get_ms_device_metadata():
 	assert md == {}
 	
 def test_get_linux_device_metadata():
+	# Test existence of the database first
+	assert os.path.isfile(settings.USB_IDS_DB_PATH)
+	
 	md = metadata.get_linux_device_metadata(1133, 49182)
 	
 	assert 'Logitech' in md['vendor_name']
