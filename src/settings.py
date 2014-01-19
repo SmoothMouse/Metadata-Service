@@ -11,8 +11,19 @@ ICONS_URL = 'http://metadata.smoothmouse.com/icons/'
 
 USB_IDS_DB_PATH = os.path.join(CACHE_DIR, 'usb-ids.sql')
 
+# -----------------------------------------------------------------------
+
 logging.basicConfig(
 	level=logging.INFO, 
 	format='%(asctime)s %(levelname)s %(message)s',
 	datefmt='%H:%M:%S',
 )
+
+# -----------------------------------------------------------------------
+
+EXTRA_SETTINGS = os.getenv('METADATA_SETTINGS')
+
+if EXTRA_SETTINGS:
+	import imp
+	imp.load_source('extra_settings', EXTRA_SETTINGS)
+	from extra_settings import *
