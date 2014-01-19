@@ -1,14 +1,9 @@
 import os, urllib, cgi
 import xml.etree.ElementTree as ET
 
-from bottle import run, route, static_file, request, response
+from bottle import run, route, static_file, request, response, debug
 
 import settings, metadata
-
-if __name__ == '__main__':
-	run(host='localhost', port=8000)
-else:
-	application = default_app()
 
 @route('/devices/<vid:int>/<pid:int>/', method='GET')
 def devices(vid, pid):
@@ -49,3 +44,10 @@ def devices(vid, pid):
 @route('/icons/<filename>')
 def serve_icons(filename):
     return static_file(filename, root=settings.ICONS_DIR)
+
+# Use development server when running from command-line
+if __name__ == '__main__':
+	debug(True)
+	run(host='localhost', port=8000, reloader=True)
+else:
+	application = default_app()
