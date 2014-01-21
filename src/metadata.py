@@ -18,7 +18,7 @@ def get_ms_device_metadata_filename(vid, pid):
 	
 	# Send request
 	service_url = 'http://dmd.metaservices.microsoft.com/dms/metadata.svc'
-	payload = template(os.path.join(settings.BASE_DIR, 'templates', 'ms_request_body.tpl'), vid=format(vid, 'x').zfill(4), pid=format(pid, 'x').zfill(4)).encode('UTF-16LE')
+	payload = template(os.path.join(os.path.dirname(__file__), 'templates', 'ms_request_body.tpl'), vid=format(vid, 'x').zfill(4), pid=format(pid, 'x').zfill(4)).encode('UTF-16LE')
 	headers = {
 		'Content-Type': 'text/xml; charset="UTF-16LE"', 
 		'Content-Length': len(payload), 

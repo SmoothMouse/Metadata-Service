@@ -5,4 +5,4 @@ __pycache__/
 /static/cache
 
 /docs
-/settings_*
+/conf
