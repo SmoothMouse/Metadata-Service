@@ -1,7 +1,7 @@
 import os, urllib, cgi
 import xml.etree.ElementTree as ET
 
-from bottle import run, route, static_file, request, response, debug
+from bottle import run, route, static_file, request, response, default_app, debug
 
 import settings, metadata
 
