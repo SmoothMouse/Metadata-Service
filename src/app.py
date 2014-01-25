@@ -1,5 +1,7 @@
+# coding: utf-8
 import os, urllib, cgi
 import xml.etree.ElementTree as ET
+from subprocess import check_output
 
 from bottle import run, route, static_file, request, response, default_app, debug
 
@@ -44,6 +46,19 @@ def devices(vid, pid):
 @route('/icons/<filename>')
 def serve_icons(filename):
     return static_file(filename, root=settings.ICONS_DIR)
+
+@route('/hooks/icons/<secret>/') # , method='POST'
+def icons_hook(secret):
+	if secret == settings.SECRET:
+		update_icons()
+	return 'Success.'
+
+def update_icons():
+	wd = os.getcwd()
+	os.chdir(settings.ICONS_DIR)
+	check_output('git fetch origin', shell=True)
+	check_output('git reset --hard origin/master', shell=True)
+	os.chdir(wd)
 
 # Use development server when running from command-line
 if __name__ == '__main__':

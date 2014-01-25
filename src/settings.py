@@ -1,6 +1,8 @@
 # coding: utf-8
 import os, logging
 
+SECRET = 'f7e2588439abf3f93d1601f140742c8f'
+
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 STATIC_DIR = os.path.join(os.path.dirname(BASE_DIR), 'static')
 
