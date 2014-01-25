@@ -18,6 +18,8 @@ from fabric.colors import blue
 env.git = 'git@bitbucket.org:smoothmouse/metadata-service.git'
 env.git_for_icons = 'https://github.com/SmoothMouse/Device-Icons.git'
 env.forward_agent = True
+env.settings = os.path.join('conf', 'settings.py') # local
+env.settings_env = 'export METADATA_SETTINGS=' + os.path.join(env.path, 'conf', 'settings.py') 
 
 @task
 def staging():
@@ -105,19 +107,20 @@ def install_requirements():
 
 @task
 def upload_settings():
-	print blue('Uploading settings from local conf/ to remote conf/...')
+	print blue('Uploading settings...')
 	conf_path = os.path.join(env.path, 'conf')
 	
 	if not exists(conf_path):
 		run('mkdir ' + conf_path)
-		
-	put('conf/*', conf_path)
+	
+	put(env.settings, conf_path)
 
 @task
 def run_tests():
 	print blue('Running py.test tests...')
-	with cd(env.path), prefix('source venv/bin/activate'):
-		run('py.test git/src')
+	with prefix(env.settings_env):
+		with cd(env.path), prefix('source venv/bin/activate'):
+			run('py.test git/src')
 
 # Project-specific tasks
 # -----------------------------------------------------------------------
@@ -141,8 +144,7 @@ def deploy(commit_id='origin/master'):
 	
 	upload_settings()
 	
-	with prefix('export METADATA_SETTINGS=' + os.path.join(env.path, 'conf', 'settings.py')):				
-		run_tests()
+	run_tests()
 	
 	uwsgi_start()
 
@@ -151,7 +153,7 @@ def update_usb_ids():
 	with cd(env.path):
 		run('mkdir -p static/cache/')
 		
-		with prefix('export METADATA_SETTINGS=' + os.path.join(env.path, 'conf', 'settings.py')):
+		with prefix(env.settings_env):
 			run('venv/bin/python git/src/manage.py --update-usb-ids')
 
 @task
