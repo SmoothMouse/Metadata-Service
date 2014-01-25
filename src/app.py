@@ -47,7 +47,7 @@ def devices(vid, pid):
 def serve_icons(filename):
     return static_file(filename, root=settings.ICONS_DIR)
 
-@route('/hooks/icons/<secret>/') # , method='POST'
+@route('/hooks/icons/<secret>/', method='POST')
 def icons_hook(secret):
 	if secret == settings.SECRET:
 		update_icons()
