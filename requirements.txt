@@ -1,4 +1,4 @@
-# Linux packages: cabextract
+# Linux packages: cabextract imagemagick
 Flask==0.10.1
 itsdangerous==0.24
 Jinja2==2.7.3
